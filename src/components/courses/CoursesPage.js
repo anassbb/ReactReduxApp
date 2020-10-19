@@ -5,6 +5,13 @@ import PropTypes from "prop-types";
 import { bindActionCreators } from "redux";
 
 class CoursesPage extends React.Component {
+  componentDidMount() {
+    // this.props.action.
+    debugger;
+    this.props.actions.loadCourses().catch((error) => {
+      alert("Loading course field" + error);
+    });
+  }
   render() {
     return (
       <>
@@ -19,7 +26,7 @@ class CoursesPage extends React.Component {
 
 CoursesPage.propTypes = {
   courses: PropTypes.array.isRequired,
-  action: PropTypes.object.isRequired,
+  actions: PropTypes.object.isRequired,
 };
 
 function mapStatToProps({ courses }) {
@@ -30,7 +37,7 @@ function mapStatToProps({ courses }) {
 
 function mapDispatchToProps(dispatch) {
   return {
-    action: bindActionCreators(courseAction, dispatch),
+    actions: bindActionCreators(courseAction, dispatch),
   };
 }
 
