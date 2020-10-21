@@ -5,6 +5,7 @@ import { loadAuthors } from "../../Redux/Actions/authorActions";
 import PropTypes from "prop-types";
 import { newCourse } from "../../../tools/mockData";
 import CourseForm from "./CourseForm";
+import Spinner from "../common/Spinner";
 
 function ManageCoursePage({
   authors,
@@ -35,7 +36,6 @@ function ManageCoursePage({
 
   function handleChange(event) {
     const { name, value } = event.target;
-    debugger;
     setCourse((prevCourse) => ({
       ...prevCourse,
       [name]: name === "authorId" ? parseInt(value, 10) : value,
@@ -76,7 +76,6 @@ export function getCourseBySlug(courses, slug) {
 
 function mapStatToProps(state, ownProps) {
   const slug = ownProps.match.params.slug;
-  debugger;
   const course =
     slug && state.courses.length > 0
       ? getCourseBySlug(state.courses, slug)

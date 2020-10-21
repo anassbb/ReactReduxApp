@@ -6,6 +6,7 @@ import PropTypes from "prop-types";
 import { bindActionCreators } from "redux";
 import CourseList from "./CourseList";
 import { Redirect } from "react-router-dom";
+import Spinner from "../common/Spinner";
 
 class CoursesPage extends React.Component {
   state = {
@@ -20,19 +21,36 @@ class CoursesPage extends React.Component {
       alert("Loading author field" + error);
     });
   }
+
+  handleDelete = (event) => {
+    const { value } = event.target;
+    this.props.actions.deleteCourse(value).then(() => {
+      console.log(this.props.courses);
+    });
+  };
+
   render() {
     return (
       <>
         {this.state.redirectToAddCoursePage && <Redirect to="/course" />}
         <h2>Courses</h2>
-        <button
-          className="btn btn-primary"
-          onClick={() => this.setState({ redirectToAddCoursePage: true })}
-        >
-          Add Course
-        </button>
+        {this.props.loading ? (
+          <Spinner />
+        ) : (
+          <>
+            <button
+              className="btn btn-primary"
+              onClick={() => this.setState({ redirectToAddCoursePage: true })}
+            >
+              Add Course
+            </button>
 
-        <CourseList courses={this.props.courses} />
+            <CourseList
+              courses={this.props.courses}
+              onClick={this.handleDelete}
+            />
+          </>
+        )}
       </>
     );
   }
@@ -41,6 +59,8 @@ class CoursesPage extends React.Component {
 CoursesPage.propTypes = {
   courses: PropTypes.array.isRequired,
   actions: PropTypes.object.isRequired,
+  authors: PropTypes.array.isRequired,
+  loading: PropTypes.bool.isRequired,
 };
 
 function mapStatToProps(state) {
@@ -56,6 +76,7 @@ function mapStatToProps(state) {
             };
           }),
     authors: state.authors,
+    loading: state.apiCallsInProgress > 0,
   };
 }
 
@@ -64,6 +85,7 @@ function mapDispatchToProps(dispatch) {
     actions: {
       loadCourses: bindActionCreators(courseAction.loadCourses, dispatch),
       loadAuthors: bindActionCreators(authorAction.loadAuthors, dispatch),
+      deleteCourse: bindActionCreators(courseAction.deleteCourse, dispatch),
     },
   };
 }
